@@ -1,0 +1,161 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --cream: #FFF8F0;
+  --warm-white: #FEFCF8;
+  --pastel-green: #A8D5BA;
+  --soft-blue: #A7C7E7;
+  --peach: #FFDAB9;
+  --light-brown: #C4A882;
+  --sage: #87A96B;
+  --leaf-dark: #4A7C59;
+  --coral: #F4845F;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--cream);
+  color: #3D3D3D;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  color: #2D2D2D;
+}
+
+/* Notebook paper background */
+.notebook-bg {
+  background-image:
+    repeating-linear-gradient(
+      transparent,
+      transparent 31px,
+      #D4E4ED 31px,
+      #D4E4ED 32px
+    );
+  background-size: 100% 32px;
+}
+
+/* Sticky note style */
+.sticky-note {
+  background: #FFF9C4;
+  padding: 1rem 1.25rem;
+  border-radius: 2px;
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.08);
+  transform: rotate(-1deg);
+  position: relative;
+}
+
+.sticky-note::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--peach);
+  border-radius: 2px 2px 0 0;
+}
+
+.sticky-note-green {
+  background: #E8F5E9;
+}
+
+.sticky-note-blue {
+  background: #E3F2FD;
+}
+
+.sticky-note-peach {
+  background: #FFF3E0;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--light-brown);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--sage);
+}
+
+/* Chat typing animation */
+.typing-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--sage);
+  animation: typingBounce 1.4s infinite ease-in-out both;
+}
+
+.typing-dot:nth-child(1) { animation-delay: -0.32s; }
+.typing-dot:nth-child(2) { animation-delay: -0.16s; }
+.typing-dot:nth-child(3) { animation-delay: 0s; }
+
+@keyframes typingBounce {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+/* Learning tree glow */
+.tree-glow {
+  filter: drop-shadow(0 0 6px rgba(168, 213, 186, 0.6));
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+  0%, 100% { filter: drop-shadow(0 0 6px rgba(168, 213, 186, 0.4)); }
+  50% { filter: drop-shadow(0 0 12px rgba(168, 213, 186, 0.8)); }
+}
+
+/* Progress bar shimmer */
+.progress-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.3),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
