@@ -36,6 +36,7 @@ export interface ConceptNode {
   branch: string;
   lessonId?: string;
   connections: string[];
+  score?: number;
 }
 
 export interface QuizQuestion {

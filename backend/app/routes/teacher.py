@@ -200,3 +200,43 @@ def generate_intervention(payload: InterventionRequest):
     res = dict(template)
     res["targetConcept"] = concept_name
     return res
+
+
+@router.get("/students")
+def get_student_roster(session: Session = Depends(get_session)):
+    """Returns all students with their performance data for the teacher roster."""
+    students = session.exec(select(Student)).all()
+    concepts = session.exec(select(Concept)).all()
+    masteries = session.exec(select(StudentConceptMastery)).all()
+
+    roster = []
+    for s in students:
+        student_masteries = [m for m in masteries if m.student_id == s.id]
+        avg_score = 0.0
+        if student_masteries:
+            avg_score = round(sum(m.score for m in student_masteries) / len(student_masteries), 1)
+
+        concept_breakdown = []
+        for m in student_masteries:
+            concept = next((c for c in concepts if c.id == m.concept_id), None)
+            concept_breakdown.append({
+                "conceptId": m.concept_id,
+                "conceptName": concept.name if concept else m.concept_id,
+                "status": m.status,
+                "score": round(m.score, 1),
+            })
+
+        roster.append({
+            "id": s.id,
+            "name": s.name,
+            "avatar": s.avatar,
+            "grade": s.grade,
+            "streak": s.streak,
+            "lessonsCompleted": s.lessons_completed,
+            "conceptsMastered": s.concepts_mastered,
+            "avgMastery": avg_score,
+            "conceptBreakdown": concept_breakdown,
+        })
+
+    return roster
+

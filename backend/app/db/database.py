@@ -19,7 +19,7 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
 
 def create_db_and_tables():
     # Import schemas to ensure they are registered on SQLModel.metadata
-    from app.models.schemas import Student, Concept, StudentConceptMastery, StudentSession, DoubtLog
+    from app.models.schemas import Student, Teacher, Concept, StudentConceptMastery, StudentSession, DoubtLog
     SQLModel.metadata.create_all(engine)
 
 

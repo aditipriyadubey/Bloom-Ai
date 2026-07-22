@@ -1,12 +1,23 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Sprout, Menu, X } from 'lucide-react';
+import { Sprout, Menu, X, LogOut } from 'lucide-react';
 import { useState } from 'react';
+import { getAuth, clearAuth } from '../../api/auth';
 
 export default function Navbar() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [mobileOpen, setMobileOpen] = useState(false);
   const isLanding = location.pathname === '/';
+  const isLoginPage = location.pathname.startsWith('/login');
+
+  const auth = getAuth();
+  const role = auth?.role;
+
+  const handleLogout = () => {
+    clearAuth();
+    navigate('/login');
+  };
 
   return (
     <nav className="sticky top-0 z-50 bg-warm-white/90 backdrop-blur-sm border-b border-pastel-green/20 h-16">
@@ -24,7 +35,7 @@ export default function Navbar() {
           </span>
         </Link>
 
-        {/* Desktop links */}
+        {/* Desktop links — Landing page */}
         {isLanding && (
           <div className="hidden md:flex items-center gap-6">
             <a href="#features" className="text-sm font-medium text-gray-600 hover:text-leaf-dark transition-colors">Features</a>
@@ -34,26 +45,42 @@ export default function Navbar() {
               to="/login"
               className="px-5 py-2 bg-leaf-dark text-white rounded-full text-sm font-semibold hover:bg-sage transition-colors"
             >
-              Start Learning
-            </Link>
-            <Link
-              to="/teacher"
-              className="px-5 py-2 border-2 border-leaf-dark text-leaf-dark rounded-full text-sm font-semibold hover:bg-leaf-dark hover:text-white transition-colors"
-            >
-              Teacher Portal
+              Get Started
             </Link>
           </div>
         )}
 
-        {!isLanding && (
+        {/* Desktop links — App pages (not landing, not login) */}
+        {!isLanding && !isLoginPage && (
           <div className="hidden md:flex items-center gap-4">
-            <div className="flex items-center gap-2 bg-bloom-yellow/30 px-3 py-1.5 rounded-full">
-              <span className="text-lg">🔥</span>
-              <span className="text-sm font-semibold text-light-brown">12 day streak</span>
-            </div>
+            {/* Role badge */}
+            {role === 'teacher' ? (
+              <div className="flex items-center gap-2 bg-soft-blue/30 px-3 py-1.5 rounded-full">
+                <span className="text-lg">👩‍🏫</span>
+                <span className="text-sm font-semibold text-blue-700">Teacher</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 bg-bloom-yellow/30 px-3 py-1.5 rounded-full">
+                <span className="text-lg">🔥</span>
+                <span className="text-sm font-semibold text-light-brown">
+                  {auth?.streak || 0} day streak
+                </span>
+              </div>
+            )}
+
+            {/* Avatar */}
             <div className="w-9 h-9 rounded-full bg-pastel-green/30 flex items-center justify-center text-lg">
-              🌸
+              {auth?.avatar || '🌱'}
             </div>
+
+            {/* Logout */}
+            <button
+              onClick={handleLogout}
+              className="p-2 rounded-lg hover:bg-peach/20 text-gray-400 hover:text-orange-600 transition-colors"
+              title="Logout"
+            >
+              <LogOut className="w-4.5 h-4.5" />
+            </button>
           </div>
         )}
 
@@ -79,18 +106,30 @@ export default function Navbar() {
               <a href="#features" className="text-sm font-medium text-gray-600 py-2" onClick={() => setMobileOpen(false)}>Features</a>
               <a href="#how-it-works" className="text-sm font-medium text-gray-600 py-2" onClick={() => setMobileOpen(false)}>How it Works</a>
               <Link to="/login" className="px-5 py-2 bg-leaf-dark text-white rounded-full text-sm font-semibold text-center" onClick={() => setMobileOpen(false)}>
-                Start Learning
-              </Link>
-              <Link to="/teacher" className="px-5 py-2 border-2 border-leaf-dark text-leaf-dark rounded-full text-sm font-semibold text-center" onClick={() => setMobileOpen(false)}>
-                Teacher Portal
+                Get Started
               </Link>
             </div>
           ) : (
             <div className="flex flex-col gap-2">
-              <Link to="/dashboard" className="text-sm font-medium text-gray-600 py-2" onClick={() => setMobileOpen(false)}>Dashboard</Link>
-              <Link to="/journey" className="text-sm font-medium text-gray-600 py-2" onClick={() => setMobileOpen(false)}>Today's Journey</Link>
-              <Link to="/tree" className="text-sm font-medium text-gray-600 py-2" onClick={() => setMobileOpen(false)}>Learning Tree</Link>
-              <Link to="/doubt" className="text-sm font-medium text-gray-600 py-2" onClick={() => setMobileOpen(false)}>AI Companion</Link>
+              {role === 'teacher' ? (
+                <>
+                  <Link to="/teacher" className="text-sm font-medium text-gray-600 py-2" onClick={() => setMobileOpen(false)}>Dashboard</Link>
+                  <Link to="/teacher/students" className="text-sm font-medium text-gray-600 py-2" onClick={() => setMobileOpen(false)}>Student Roster</Link>
+                </>
+              ) : (
+                <>
+                  <Link to="/dashboard" className="text-sm font-medium text-gray-600 py-2" onClick={() => setMobileOpen(false)}>Dashboard</Link>
+                  <Link to="/journey" className="text-sm font-medium text-gray-600 py-2" onClick={() => setMobileOpen(false)}>Today's Journey</Link>
+                  <Link to="/tree" className="text-sm font-medium text-gray-600 py-2" onClick={() => setMobileOpen(false)}>Learning Tree</Link>
+                  <Link to="/doubt" className="text-sm font-medium text-gray-600 py-2" onClick={() => setMobileOpen(false)}>AI Companion</Link>
+                </>
+              )}
+              <button
+                onClick={() => { handleLogout(); setMobileOpen(false); }}
+                className="text-sm font-medium text-orange-600 py-2 text-left"
+              >
+                Logout
+              </button>
             </div>
           )}
         </motion.div>

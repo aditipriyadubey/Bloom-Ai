@@ -11,9 +11,11 @@ import {
   ClipboardCheck,
   Trophy,
   TrendingUp,
+  Users,
 } from 'lucide-react';
+import { getAuth } from '../../api/auth';
 
-const navItems = [
+const studentNavItems = [
   { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { path: '/journey', label: "Today's Journey", icon: Compass },
   { path: '/quiz', label: 'Diagnostic Quiz', icon: ClipboardCheck },
@@ -25,10 +27,23 @@ const navItems = [
   { path: '/progress', label: 'Progress', icon: TrendingUp },
 ];
 
-const teacherItem = { path: '/teacher', label: 'Teacher Dashboard', icon: GraduationCap };
+const teacherNavItems = [
+  { path: '/teacher', label: 'Class Dashboard', icon: GraduationCap },
+  { path: '/teacher/students', label: 'Student Roster', icon: Users },
+];
 
 export default function Sidebar() {
   const location = useLocation();
+  const auth = getAuth();
+  const role = auth?.role || 'student';
+
+  const navItems = role === 'teacher' ? teacherNavItems : studentNavItems;
+  const sectionLabel = role === 'teacher' ? 'Teacher' : 'Student';
+  const accentColor = role === 'teacher' ? 'soft-blue' : 'pastel-green';
+  const activeTextColor = role === 'teacher' ? 'text-blue-700' : 'text-leaf-dark';
+  const activeBg = role === 'teacher' ? 'bg-soft-blue/20' : 'bg-pastel-green/20';
+  const hoverBg = role === 'teacher' ? 'hover:bg-soft-blue/10 hover:text-blue-700' : 'hover:bg-pastel-green/10 hover:text-leaf-dark';
+  const indicatorColor = role === 'teacher' ? 'bg-blue-600' : 'bg-leaf-dark';
 
   return (
     <>
@@ -36,7 +51,7 @@ export default function Sidebar() {
       <aside className="hidden lg:flex fixed left-0 top-16 bottom-0 w-64 bg-warm-white border-r border-pastel-green/20 flex-col py-6 px-4 overflow-y-auto z-40">
         <div className="mb-6">
           <p className="text-xs font-semibold text-light-brown uppercase tracking-wider px-3 mb-3">
-            Student
+            {sectionLabel}
           </p>
           <nav className="flex flex-col gap-1">
             {navItems.map(item => {
@@ -47,14 +62,14 @@ export default function Sidebar() {
                   to={item.path}
                   className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
                     isActive
-                      ? 'bg-pastel-green/20 text-leaf-dark'
-                      : 'text-gray-500 hover:bg-pastel-green/10 hover:text-leaf-dark'
+                      ? `${activeBg} ${activeTextColor}`
+                      : `text-gray-500 ${hoverBg}`
                   }`}
                 >
                   {isActive && (
                     <motion.div
                       layoutId="sidebar-active"
-                      className="absolute left-0 w-1 h-8 bg-leaf-dark rounded-r-full"
+                      className={`absolute left-0 w-1 h-8 ${indicatorColor} rounded-r-full`}
                       transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                     />
                   )}
@@ -66,42 +81,32 @@ export default function Sidebar() {
           </nav>
         </div>
 
-        <div className="border-t border-pastel-green/20 pt-4 mt-auto">
-          <p className="text-xs font-semibold text-light-brown uppercase tracking-wider px-3 mb-3">
-            Teacher
-          </p>
-          <Link
-            to={teacherItem.path}
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
-              location.pathname === teacherItem.path
-                ? 'bg-soft-blue/20 text-blue-700'
-                : 'text-gray-500 hover:bg-soft-blue/10 hover:text-blue-700'
-            }`}
-          >
-            <teacherItem.icon className="w-5 h-5 flex-shrink-0" />
-            <span>{teacherItem.label}</span>
-          </Link>
-        </div>
-
         {/* Decorative plant */}
-        <div className="mt-6 p-4 bg-pastel-green/10 rounded-2xl text-center">
-          <div className="text-3xl mb-2">🌿</div>
-          <p className="text-xs text-sage font-medium">Keep growing!</p>
-          <p className="text-xs text-gray-400 mt-1">12 concepts mastered</p>
+        <div className={`mt-auto p-4 bg-${accentColor}/10 rounded-2xl text-center`}>
+          <div className="text-3xl mb-2">{role === 'teacher' ? '👩‍🏫' : '🌿'}</div>
+          <p className="text-xs text-sage font-medium">
+            {role === 'teacher' ? 'Nurturing minds!' : 'Keep growing!'}
+          </p>
+          <p className="text-xs text-gray-400 mt-1">
+            {auth?.name || 'Explorer'}
+          </p>
         </div>
       </aside>
 
       {/* Mobile Bottom Nav */}
       <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-warm-white border-t border-pastel-green/20 z-50 px-2 py-1">
         <div className="flex justify-around items-center">
-          {[navItems[0], navItems[1], navItems[5], navItems[6]].map(item => {
+          {(role === 'teacher'
+            ? teacherNavItems
+            : [studentNavItems[0], studentNavItems[1], studentNavItems[5], studentNavItems[6]]
+          ).map(item => {
             const isActive = location.pathname === item.path;
             return (
               <Link
                 key={item.path}
                 to={item.path}
                 className={`flex flex-col items-center gap-1 py-2 px-3 rounded-xl text-xs transition-colors ${
-                  isActive ? 'text-leaf-dark' : 'text-gray-400'
+                  isActive ? activeTextColor : 'text-gray-400'
                 }`}
               >
                 <item.icon className="w-5 h-5" />

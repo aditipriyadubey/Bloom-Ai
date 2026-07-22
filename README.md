@@ -4,6 +4,28 @@ BloomAI is an AI-powered personalized learning platform built for students and t
 
 ---
 
+## 📸 Screenshots
+
+### Landing Page
+![Landing Page](docs/screenshots/landing.png)
+
+### Student Dashboard
+![Student Dashboard](docs/screenshots/student-dashboard.png)
+
+### Learning Tree — Concept Mastery Visualization
+![Learning Tree](docs/screenshots/learning-tree.png)
+
+### AI Doubt Companion
+![AI Companion](docs/screenshots/ai-companion.png)
+
+### Teacher Dashboard — Class Insights
+![Teacher Dashboard](docs/screenshots/teacher-dashboard.png)
+
+### Student Roster — Individual Performance
+![Student Roster](docs/screenshots/student-roster.png)
+
+---
+
 ## 🏗️ Architecture Overview
 
 - **Frontend**: React 18, TypeScript, Vite, Tailwind CSS, Framer Motion, Lucide Icons, Recharts

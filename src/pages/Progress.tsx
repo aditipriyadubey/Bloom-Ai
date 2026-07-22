@@ -1,14 +1,35 @@
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { TrendingUp, BookOpen, TreePine, Flame, Target } from 'lucide-react';
 import BloomCard from '../components/cards/BloomCard';
 import ProgressBar from '../components/ui/ProgressBar';
+import LoadingSpinner from '../components/ui/LoadingSpinner';
 import { currentStudent } from '../data/students';
-import { concepts } from '../data/concepts';
+import { getLearningTree } from '../api/learningTree';
 import { achievements } from '../data/achievements';
+import type { ConceptNode } from '../types';
 
 export default function Progress() {
+  const [concepts, setConcepts] = useState<ConceptNode[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getLearningTree()
+      .then(setConcepts)
+      .catch(() => {
+        // Fallback to empty if backend is down
+        setConcepts([]);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return <LoadingSpinner message="Loading your growth story..." />;
+
   const bloomedCount = concepts.filter(c => c.status === 'bloomed').length;
   const earnedBadges = achievements.filter(a => a.earned).length;
+
+  // Read user's login choices from localStorage
+  const studentName = localStorage.getItem('bloom_student_name') || currentStudent.name;
 
   const weeklyData = [
     { day: 'Mon', lessons: 3, practice: 5 },
@@ -31,7 +52,7 @@ export default function Progress() {
       >
         <h1 className="font-heading text-2xl sm:text-3xl font-bold text-gray-900 flex items-center gap-2">
           <TrendingUp className="w-7 h-7 text-leaf-dark" />
-          Your Growth Story 📊
+          {studentName}'s Growth Story 📊
         </h1>
         <p className="text-sm text-gray-500 mt-1">
           Every step forward is progress — look at how far you've come!
@@ -72,7 +93,7 @@ export default function Progress() {
                 <span className="text-xs text-gray-400">{concept.subject}</span>
               </div>
               <ProgressBar
-                value={concept.status === 'bloomed' ? 100 : 55}
+                value={concept.score != null ? Math.round(concept.score) : (concept.status === 'bloomed' ? 100 : 50)}
                 max={100}
                 color={concept.status === 'bloomed' ? 'bg-pastel-green' : 'bg-bloom-yellow'}
                 height="h-2"
@@ -129,3 +150,4 @@ export default function Progress() {
     </div>
   );
 }
+

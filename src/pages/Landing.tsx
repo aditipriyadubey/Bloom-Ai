@@ -108,12 +108,12 @@ export default function Landing() {
               transition={{ duration: 0.6, delay: 0.3 }}
               className="flex flex-col sm:flex-row gap-4 justify-center"
             >
-              <Link to="/login">
+              <Link to="/login/student">
                 <BloomButton size="lg" variant="primary">
                   Start Learning <ArrowRight className="w-5 h-5" />
                 </BloomButton>
               </Link>
-              <Link to="/teacher">
+              <Link to="/login/teacher">
                 <BloomButton size="lg" variant="outline">
                   Teacher Portal
                 </BloomButton>
@@ -304,12 +304,12 @@ export default function Landing() {
                 Join thousands of students who are learning, growing, and blooming every day — at their own pace, in their own way.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link to="/login">
+                <Link to="/login/student">
                   <BloomButton size="lg" variant="secondary">
                     Begin Your Journey <Zap className="w-5 h-5" />
                   </BloomButton>
                 </Link>
-                <Link to="/teacher">
+                <Link to="/login/teacher">
                   <BloomButton size="lg" className="bg-white/20 text-white hover:bg-white/30 border-0">
                     <Shield className="w-5 h-5" /> I'm a Teacher
                   </BloomButton>

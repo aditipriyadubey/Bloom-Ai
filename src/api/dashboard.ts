@@ -6,8 +6,16 @@ import type { DashboardData } from '../types';
 
 export async function getDashboard(): Promise<DashboardData> {
   await delay(300);
+
+  // Override with user's login choices from localStorage
+  const student = {
+    ...currentStudent,
+    name: localStorage.getItem('bloom_student_name') || currentStudent.name,
+    avatar: localStorage.getItem('bloom_student_avatar') || currentStudent.avatar,
+  };
+
   return {
-    student: currentStudent,
+    student,
     todaysJourney,
     achievements,
     recentActivity: [
@@ -18,10 +26,11 @@ export async function getDashboard(): Promise<DashboardData> {
       { action: 'Started "Algebra Basics" journey', time: 'Yesterday', icon: '🚀' },
     ],
     quickStats: [
-      { label: 'Lessons Completed', value: currentStudent.lessonsCompleted, icon: '📚' },
-      { label: 'Concepts Mastered', value: currentStudent.conceptsMastered, icon: '🌸' },
-      { label: 'Learning Streak', value: `${currentStudent.streak} days`, icon: '🔥' },
+      { label: 'Lessons Completed', value: student.lessonsCompleted, icon: '📚' },
+      { label: 'Concepts Mastered', value: student.conceptsMastered, icon: '🌸' },
+      { label: 'Learning Streak', value: `${student.streak} days`, icon: '🔥' },
       { label: 'Badges Earned', value: achievements.filter(a => a.earned).length, icon: '⭐' },
     ],
   };
 }
+

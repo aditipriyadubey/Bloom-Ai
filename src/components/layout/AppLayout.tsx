@@ -6,7 +6,7 @@ import Sidebar from './Sidebar';
 export default function AppLayout() {
   const location = useLocation();
   const isLanding = location.pathname === '/';
-  const isLogin = location.pathname === '/login';
+  const isLogin = location.pathname.startsWith('/login');
   const showSidebar = !isLanding && !isLogin;
 
   return (

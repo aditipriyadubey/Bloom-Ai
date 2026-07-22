@@ -4,6 +4,8 @@ from sqlmodel import SQLModel, Field
 class Student(SQLModel, table=True):
     id: str = Field(primary_key=True)
     name: str
+    email: str = Field(default="", index=True)
+    password_hash: str = ""
     avatar: str
     grade: str
     streak: int = 0
@@ -11,6 +13,14 @@ class Student(SQLModel, table=True):
     concepts_mastered: int = 0
     joined_date: str
     diagnostic_level: Optional[str] = None  # Level classified by diagnostic quiz
+
+class Teacher(SQLModel, table=True):
+    id: str = Field(primary_key=True)
+    name: str
+    email: str = Field(default="", index=True)
+    password_hash: str = ""
+    avatar: str = "👩‍🏫"
+    created_at: str = ""
 
 class Concept(SQLModel, table=True):
     id: str = Field(primary_key=True)
@@ -41,4 +51,5 @@ class DoubtLog(SQLModel, table=True):
     question: str
     concept_id: str = "c6"
     timestamp: str
+
 

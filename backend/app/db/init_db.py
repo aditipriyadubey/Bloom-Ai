@@ -1,7 +1,12 @@
 import json
+import hashlib
 from sqlmodel import Session, select
 from app.db.database import engine, create_db_and_tables
-from app.models.schemas import Student, Concept, StudentConceptMastery, StudentSession
+from app.models.schemas import Student, Teacher, Concept, StudentConceptMastery, StudentSession
+
+
+def hash_password(password: str) -> str:
+    return hashlib.sha256(password.encode()).hexdigest()
 
 def seed_db():
     print("Initializing database and tables...")
@@ -15,15 +20,26 @@ def seed_db():
             return
 
         print("Seeding students...")
+        default_pw = hash_password("bloom123")
         students_data = [
-            Student(id="s1", name="Aditi Sharma", avatar="🌸", grade="Class 8", streak=12, lessons_completed=34, concepts_mastered=18, joined_date="2026-03-15"),
-            Student(id="s2", name="Arjun Patel", avatar="🌿", grade="Class 8", streak=7, lessons_completed=28, concepts_mastered=14, joined_date="2026-04-02"),
-            Student(id="s3", name="Priya Reddy", avatar="🌻", grade="Class 8", streak=21, lessons_completed=45, concepts_mastered=22, joined_date="2026-02-10"),
-            Student(id="s4", name="Rohan Gupta", avatar="🌱", grade="Class 8", streak=5, lessons_completed=19, concepts_mastered=10, joined_date="2026-05-01"),
-            Student(id="s5", name="Meera Krishnan", avatar="🌷", grade="Class 8", streak=15, lessons_completed=38, concepts_mastered=20, joined_date="2026-03-28"),
+            Student(id="s1", name="Aditi Sharma", email="aditi@bloom.ai", password_hash=default_pw, avatar="🌸", grade="Class 8", streak=12, lessons_completed=34, concepts_mastered=18, joined_date="2026-03-15"),
+            Student(id="s2", name="Arjun Patel", email="arjun@bloom.ai", password_hash=default_pw, avatar="🌿", grade="Class 8", streak=7, lessons_completed=28, concepts_mastered=14, joined_date="2026-04-02"),
+            Student(id="s3", name="Priya Reddy", email="priya@bloom.ai", password_hash=default_pw, avatar="🌻", grade="Class 8", streak=21, lessons_completed=45, concepts_mastered=22, joined_date="2026-02-10"),
+            Student(id="s4", name="Rohan Gupta", email="rohan@bloom.ai", password_hash=default_pw, avatar="🌱", grade="Class 8", streak=5, lessons_completed=19, concepts_mastered=10, joined_date="2026-05-01"),
+            Student(id="s5", name="Meera Krishnan", email="meera@bloom.ai", password_hash=default_pw, avatar="🌷", grade="Class 8", streak=15, lessons_completed=38, concepts_mastered=20, joined_date="2026-03-28"),
         ]
         for s in students_data:
             session.add(s)
+
+        print("Seeding demo teacher...")
+        session.add(Teacher(
+            id="t1",
+            name="Mrs. Lakshmi Iyer",
+            email="teacher@bloom.ai",
+            password_hash=default_pw,
+            avatar="👩‍🏫",
+            created_at="2026-01-10",
+        ))
 
         print("Seeding concepts...")
         concepts_data = [
